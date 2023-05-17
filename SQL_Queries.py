@@ -102,11 +102,7 @@ all_koshka_pet = """
     """
 
 all_customers = """ 
-    SELECT `Name`, `Surname`, `email`, `phone`, `passport`  FROM customer
-    ORDER BY ID;
-    """
-
-all_cheque = """ 
     SELECT * FROM cheque
-    ORDER BY ID;
+    INNER JOIN customer
+    ON cheque.id_customer = customer.ID;
     """

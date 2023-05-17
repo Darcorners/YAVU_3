@@ -33,7 +33,14 @@ try:
             cursor.execute(SQL_Q.all_koshka_pet)
             res_view3 = cursor.fetchall()
             for i in res_view3:
-                print(f"Кличка: {i['Name']}, Категория: {i['Category_ID']}, Порода: {i['Poroda']}, Возраст: {i['Age']}, Пол: {i['Gender']}, Описание: {i['Opisanie']}, Цена: {i['price']}")
+                print(f"Кличка: {i['Name']}, Категория: {i['Category_ID']}, Порода: {i['Poroda']}, Возраст: {i['Age']}, Пол: {i['Gender']}, Описание: {i['Opisanie']}, Цена: {i['price']}\n")
+            print('.' * 20)
+            print('\n')
+            cursor.execute(SQL_Q.all_customers)
+            res_view4 = cursor.fetchall()
+            # print(res_view4)
+            for i in res_view4:
+                print(f"ID чека: {i['ID']}, Дата оплаты: {i['Data']}, Способ оплаты: {i['payment']}, ID Клиента: {i['id_customer']}\nID Клиента: {i['customer.ID']}, Имя: {i['Name']}, Фамилия: {i['Surname']}, Телефон: {i['phone']}\n")
 
             # cursor.execute(SQL_Q.create_tablecreate_category_query)
             # cursor.execute(SQL_Q.create_tablecreate_pet_query)
