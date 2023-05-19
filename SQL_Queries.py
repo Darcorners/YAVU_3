@@ -13,9 +13,9 @@ create_tablecreate_customer_query = """
     Surname VarChar(255) NOT NULL,
     email VarChar(255),
     phone VarChar(255) NOT NULL,
-    passport VarChar(255) NOT NULL,
-    login VarChar(20) NOT NULL,
-    password MD5(20) NOT NULL
+    passport Char(32) NOT NULL,
+    login Char(32) NOT NULL,
+    password Char(32) NOT NULL
 
     )
     """
