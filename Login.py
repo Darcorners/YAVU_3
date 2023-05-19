@@ -2,7 +2,7 @@ import re
 import ConnDB
 from ConnDB import connection
 
-patternE = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'
+patternE = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$'
 patternN = '^[0-9]{11}$'
 
 while True:
@@ -31,37 +31,58 @@ while True:
                 print('Введите почту: ')
                 Email = str(input())
                 CheckerE = bool(re.match(patternE, Email))
-                print('Введите номер телефона')
-                Number = input()
-                CheckerN = bool(re.match(patternN, Number))
-                print('Введите номер паспорта и серию')
-                Passport = input()
-                CheckerPp = bool(len(Passport) == 10)
-                print('Введите логин')
-                Login = input()
-                CheckerL = bool(re.match('^[a-zA-Z]+$', Login))
-                print('Введите пароль')
-                Password = input()
-                CheckerP = bool(re.match('^[a-zA-Z]+$', Password))
                 if CheckerE == False:
                     print('Неправильный формат почты')
-                elif CheckerN == False:
-                    print('Неправильный номер телефона')
-                elif CheckerPp == False:
-                    print('Неправильный номер паспорта')
-                elif CheckerP == True and CheckerL == True:
-                    select_MD5 = f""" SELECT MD5( '{Password}' );'); """
-                    select_registrate= f""" INSERT INTO customer(`Name`, `Surname`, `email`, `phone`, `passport`, `login`, `password`) VALUES ('{Name}', '{Surname}', '{Email}', MD5('{Number}'), MD5('{Passport}'), MD5('{Login}'),MD5('{Password}')); """
-                    cursor.execute(select_registrate)
-                    connection.commit()
-                    print('Регистрация успешна')
                 else:
-                    print('Для ввода допустимы только английские символы')
+                    print('Введите номер телефона')
+                    Number = input()
+                    digits_only = re.sub(r'\D+', '', Number)
+                    CheckerN = bool(re.match(patternN, digits_only))
+                    # Reg_Check = f""" SELECT number FROM customer WHERE '{digits_only}' = ` REPLACE(number, '[^0-9]', '') `"""
+                    if CheckerN == False:
+                        print('Неправильный номер телефона')
+                    # elif RegCheck:
+                    #     print('Телефон занят')
+                    else:
+                        print('Введите номер паспорта и серию')
+                        Passport = input()
+                        digits_only = re.sub(r'\D+', '', Passport)
+                        CheckerPp = bool(len(digits_only) == 10)
+                        Reg_Check = f""" SELECT passport FROM customer WHERE '{Passport}' = `passport`"""
+                        cursor.execute(Reg_Check)
+                        RegCheck = cursor.fetchall()
+                        if CheckerPp == False:
+                            print('Неправильный номер паспорта')
+                        elif RegCheck:
+                            print('Паспорт занят')
+                        else:
+                            print('Введите логин')
+                            Login = input()
+                            CheckerL = bool(re.match('^[a-zA-Z0-9._%+-]{4,}$', Login))
+                            Reg_Check = f""" SELECT password FROM customer WHERE MD5('{Login}') = `login` OR '{Login}' = `login`"""
+                            cursor.execute(Reg_Check)
+                            RegCheck = cursor.fetchall()
+                            if CheckerL == False:
+                                print('Логин неправильно заполнен')
+                            elif RegCheck:
+                                print('Логин существует')
+                            else:
+                                print('Введите пароль')
+                                Password = input()
+                                CheckerP = bool(re.match('^[a-zA-Z0-9._%+-]{4,}$', Password))
+                                if CheckerP == True:
+                                    select_MD5 = f""" SELECT MD5( '{Password}' );'); """
+                                    select_registrate= f""" INSERT INTO customer(`Name`, `Surname`, `email`, `phone`, `passport`, `login`, `password`) VALUES ('{Name}', '{Surname}', '{Email}', ('{Number}'), ('{Passport}'), MD5('{Login}'),MD5('{Password}')); """
+                                    cursor.execute(select_registrate)
+                                    connection.commit()
+                                    print('Регистрация успешна')
+                                else:
+                                    print('Для ввода допустимы только английские символы, Минимальное число символов 4')
 
     except Exception as ex:
         print("\nПрограмма выполнена с ошибками")
         print(ex)
 
     if ent == 3:
-        print("Goodbye!")
+        print("До свидания!")
         break
