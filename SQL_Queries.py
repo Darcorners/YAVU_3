@@ -96,7 +96,17 @@ max_categoty_pet = """
     DESC LIMIT 1;
     """
 
+all_sobaka_pet = """ 
+    SELECT * FROM Pet
+    WHERE Category_ID = 2;
+    """
+
 all_koshka_pet = """ 
+    SELECT * FROM Pet
+    WHERE Category_ID = 1;
+    """
+
+all_pet = """ 
     SELECT * FROM Pet
     ORDER BY Category_ID;
     """
